@@ -55,13 +55,12 @@ def create_question_from(dictionary, dbm):
 
     return None
 
-
-def _get_image_field(code, dictionary, label, name, instruction, required, parent_field_code):
+def _get_image_field(code, dictionary, label, name, instruction, required):
     constraints, constraints_json = [], dictionary.get("constraints")
     if constraints_json is not None:
         constraints = constraints_factory(constraints_json)
-    field = ImageField(name=name, code=code, label=label, constraints=constraints, instruction=instruction,
-                       required=required, parent_field_code=parent_field_code)
+    field = ImageField(name=name, code=code, label=label,
+                      constraints=constraints, instruction=instruction, required=required)
     return field
 
 
@@ -740,14 +739,12 @@ class ImageField(Field):
         return value
 
     def __init__(self, name, code, label, constraints=None, instruction=None,
-                 entity_question_flag=False, required=True, parent_field_code=None):
+                 required=True):
         if not constraints: constraints = []
         assert isinstance(constraints, list)
         Field.__init__(self, type=field_attributes.IMAGE, name=name, code=code,
                        label=label, instruction=instruction, constraints=constraints, required=required,
                        parent_field_code=parent_field_code)
-        if entity_question_flag:
-            self._dict[self.ENTITY_QUESTION_FLAG] = entity_question_flag
 
 
 class FieldSet(Field):
