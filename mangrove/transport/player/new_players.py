@@ -110,6 +110,7 @@ class XFormPlayerV2(object):
 
     def add_new_attachments(self, mediaFiles, survey_response_id):
         for name, file in mediaFiles.iteritems():
+            # TODO may be we don't need this check
             if name != 'xml_submission_file':
                 self.dbm.put_attachment(get_survey_response_document(self.dbm, survey_response_id),
                                         file, attachment_name=name)
@@ -117,7 +118,7 @@ class XFormPlayerV2(object):
     def delete_removed_attachments(self, request, survey_response_id):
         survey_responce_doc = get_survey_response_document(self.dbm, survey_response_id)
         #TODO can get_attachment method be added to survey_doc
-        existing_media = survey_responce_doc._data['_attachments'].keys()
+        existing_media = survey_responce_doc._data.get('_attachments', {}).keys()
 
         if request.retain_files and len(request.retain_files) > 0:
             self.keep_attachments(survey_response_id, existing_media, request.retain_files)
