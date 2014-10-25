@@ -241,6 +241,15 @@ class SurveyResponse(DataObject):
     def is_anonymous_submission(self, value):
         self._doc.is_anonymous_submission = value
 
+    @property
+    def is_guest_submission(self):
+        return self._doc.is_guest_submission
+
+    @is_guest_submission.setter
+    def is_guest_submission(self, value):
+        self._doc.is_guest_submission = value
+
+
 class SurveyResponseDifference(object):
     def __init__(self, submitted_on, status_changed):
         self.created = submitted_on

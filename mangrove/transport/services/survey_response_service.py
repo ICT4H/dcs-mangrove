@@ -23,20 +23,35 @@ class SurveyResponseService(object):
     def save_survey(self, form_code, values, reporter_names, transport_info, reporter_id,
                     additional_feed_dictionary=None, translation_processor=None):
         form_model = get_form_model_by_code(self.dbm, form_code)
-
-        #TODO : validate_submission should use form_model's bound values
         form_model.bind(values)
-        cleaned_data, errors = form_model.validate_submission(values=values)
+        survey_response = self.create_survey_response(form_model, reporter_id, transport_info)
+        return self._save_survey(form_model, values, reporter_names, survey_response,
+                    additional_feed_dictionary, translation_processor)
 
+    def save_guest_survey(self, form_code, values, transport_info):
+        form_model = get_form_model_by_code(self.dbm, form_code)
+        form_model.bind(values)
+        survey_response = self.create_survey_response_for_guest(transport_info, form_model.id,
+                                              form_model.bound_values(),
+                                              self.response)
+        survey_response.set_form(form_model)
+        return self._save_survey(form_model, values, [], survey_response)
+
+    def create_survey_response(self, form_model, reporter_id, transport_info):
         if reporter_id is not None:
             survey_response = self.create_survey_response_from_known_datasender(transport_info, form_model,
-                                                                            form_model.bound_values(),
-                                                                            reporter_id, self.response)
+                                                                                form_model.bound_values(),
+                                                                                reporter_id, self.response)
         else:
             survey_response = self.create_survey_response_from_unknown_datasender(transport_info, form_model.id,
-                                                                            form_model.bound_values(), self.response)
-
+                                                                                  form_model.bound_values(),
+                                                                                  self.response)
         survey_response.set_form(form_model)
+        return survey_response
+
+    def _save_survey(self, form_model, values, reporter_names, survey_response,
+                    additional_feed_dictionary=None, translation_processor=None):
+        cleaned_data, errors = form_model.validate_submission(values=values)
 
         form_submission = DataFormSubmission(form_model, cleaned_data, errors)
         feed_create_errors = None
@@ -138,4 +153,12 @@ class SurveyResponseService(object):
         survey_response = SurveyResponse(self.dbm, transport_info, form_model_id, values=values, owner_uid=None,
                                          admin_id=self.admin_id or transport_info.source, response=response)
         survey_response.is_anonymous_submission = True
+        return survey_response
+
+    def create_survey_response_for_guest(self, transport_info, form_model_id, values, response):
+
+        survey_response = SurveyResponse(self.dbm, transport_info, form_model_id, values=values, owner_uid=self.admin_id,
+                                         #sets the guest email as admin_id (created_by)
+                                         admin_id=transport_info.source, response=response)
+        survey_response.is_guest_submission = True
         return survey_response
