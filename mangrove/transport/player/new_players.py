@@ -98,6 +98,14 @@ class XFormPlayerV2(object):
         self.add_new_attachments(request.media, response.survey_response_id)
         return response
 
+    def add_guest_survey_response(self, request, logger=None):
+        assert request is not None
+        form_code, values = self._parse(request.message)
+        service = SurveyResponseService(self.dbm, logger, self.feeds_dbm)
+        response = service.save_guest_survey(form_code, values, request.transport)
+        self.add_new_attachments(request.media, response.survey_response_id)
+        return response
+
     def update_survey_response(self, request, logger=None, survey_response=None, additional_feed_dictionary=None):
         assert request is not None
         form_code, values = self._parse(request.message)
