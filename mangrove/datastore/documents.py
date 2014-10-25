@@ -252,6 +252,17 @@ class SurveyResponseDocument(DocumentBase):
         else:
             del self['is_anonymous_submission']
 
+    @property
+    def is_guest_submission(self):
+        return self.get('is_guest_submission', False)
+
+    @is_guest_submission.setter
+    def is_guest_submission(self, value):
+        if value:
+            self['is_guest_submission'] = True
+        else:
+            del self['is_guest_submission']
+
 
 class EnrichedSurveyResponseDocument(DocumentBase):
     """
