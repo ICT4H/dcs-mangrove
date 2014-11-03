@@ -218,6 +218,14 @@ class FormModel(DataObject):
     def xform(self):
         return self._doc.xform
 
+    @property
+    def created_through(self):
+        return self._doc.created_though
+
+    @created_through.setter
+    def created_through(self, value):
+        self._doc.created_through = value
+
     def update_xform_with_questionnaire_name(self, questionnaire_name):
         self.xform = re.sub(r"<html:title>.+</html:", "<html:title>%s</html:" % questionnaire_name, self.xform)
 
