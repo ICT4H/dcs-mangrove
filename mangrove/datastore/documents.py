@@ -156,6 +156,7 @@ class FormModelDocument(DocumentBase):
     validators = ListField(DictField())
     snapshots = DictField()
     xform = TextField()
+    created_through = TextField()
 
     def __init__(self, id=None):
         DocumentBase.__init__(self, id=id, document_type='FormModel')
