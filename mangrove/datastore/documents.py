@@ -219,7 +219,7 @@ class FormModelDocument(DocumentBase):
     snapshots = DictField()
     xform = TextField()
     is_media_type_fields_present = BooleanField(default=False)
-    created_through = TextField()
+    created_using = TextField()
 
     def __init__(self, id=None):
         DocumentBase.__init__(self, id=id, document_type='FormModel')

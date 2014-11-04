@@ -302,12 +302,12 @@ class FormModel(DataObject):
         return self._doc.xform
 
     @property
-    def created_through(self):
-        return self._doc.created_though
+    def created_using(self):
+        return self._doc.created_using
 
-    @created_through.setter
-    def created_through(self, value):
-        self._doc.created_through = value
+    @created_using.setter
+    def created_using(self, value):
+        self._doc.created_using = value
 
     def update_xform_with_questionnaire_name(self, questionnaire_name):
         # Escape <, > and & and convert accented characters to equivalent non-accented characters
