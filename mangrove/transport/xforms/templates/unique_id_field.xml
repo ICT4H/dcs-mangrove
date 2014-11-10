@@ -1,4 +1,4 @@
-<select1 ref="{{ field.code }}" appearance="quick">
+<select1 ref="/data/{{ field.code }}" appearance="quick">
         <label>{{ field.label }}</label>
         {% for (code, name) in field.options %}
             <item>
