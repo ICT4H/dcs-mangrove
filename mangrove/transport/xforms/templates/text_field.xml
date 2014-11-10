@@ -1,4 +1,4 @@
-<input ref="{{ field.code }}">
+<input ref="/data/{{ field.code }}">
     <label>{{ field.label }}</label>
     <hint>{{ field.instruction }}</hint>
 </input>

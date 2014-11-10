@@ -1,6 +1,7 @@
 import re
 from coverage.html import escape
 from jinja2 import Environment, PackageLoader
+from pyxform import create_survey_element_from_dict
 from mangrove.datastore.entity import get_all_entities
 from mangrove.form_model.field import field_attributes, SelectField, UniqueIdField
 from mangrove.form_model.form_model import FormModel
@@ -49,19 +50,6 @@ def xform_for(dbm, form_id, reporter_id):
         #so that in the smartphone repeat questions have atleast one group pre added
         return re.sub('ns2:template=""',"",xform_cleaned)
 
-    _escape_special_characters(questionnaire)
-    ui_fields = []
-    for field in questionnaire.fields:
-        if isinstance(field, UniqueIdField):
-            ui_fields.append(UniqueIdUIField(field,dbm))
-        else:
-            ui_fields.append(field)
-    template = env.get_template('reporter_entity_form.xml')
-    return template.render(questionnaire=questionnaire, fields=ui_fields, field_xmls=field_xmls, reporter_id=reporter_id,
-                           field_types=field_types, default_template=env.get_template('text_field.xml'))
-
-def generate_xform(dbm, form_id, reporter_id):
-    questionnaire = FormModel.get(dbm, form_id)
     _escape_special_characters(questionnaire)
     ui_fields = []
     for field in questionnaire.fields:
