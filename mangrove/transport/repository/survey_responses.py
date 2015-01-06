@@ -27,6 +27,15 @@ def get_survey_responses(dbm, form_model_id, from_time, to_time, page_number=0, 
     return [SurveyResponse.new_from_doc(dbm=dbm, doc=SurveyResponse.__document_class__.wrap(row['value'])) for row in
             rows]
 
+def get_view_paginated(dbm, form_model_id, skip_records=0, page_size=None, view_name="undeleted_survey_response"):
+    startkey, endkey = _get_start_and_end_key(form_model_id, None, None)
+    results = dbm.load_view_results(view_name, reduce=False, descending=True,
+            startkey=startkey,
+            endkey=endkey, skip=skip_records, limit=page_size)
+
+    return results.total_rows, \
+           [SurveyResponse.new_from_doc(dbm=dbm, doc=SurveyResponse.__document_class__.wrap(row['value'])) for row in
+                results.rows]
 
 def get_survey_response_by_id(dbm, survey_response_id):
     try:

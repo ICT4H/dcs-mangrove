@@ -191,15 +191,19 @@ class DatabaseManager(object):
         return repr(self.database)
 
     def load_all_rows_in_view(self, view_name, **values):
+        return self.load_view_results(view_name, **values).rows
+
+    def load_view_results(self, view_name, **values):
         full_view_name = view_name + '/' + view_name
         print '[DEBUG] loading view: %s' % full_view_name
         start = datetime.now()
-        rows = self.database.view(full_view_name, **values).rows
+        results = self.database.view(full_view_name, **values)
         end = datetime.now()
         delta_t = (end - start)
         print "[DEBUG] --- took %s.%s seconds (%s rows)" %\
-              (delta_t.seconds, delta_t.microseconds, len(rows))
-        return rows
+              (delta_t.seconds, delta_t.microseconds, len(results.rows))
+        return results
+
 
     def create_view(self, view_name, map, reduce):
         view_document = view_name # views get their own design doc for the time being
