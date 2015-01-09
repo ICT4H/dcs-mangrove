@@ -43,6 +43,12 @@ def get_survey_response_by_id(dbm, survey_response_id):
     except DataObjectNotFound:
         return None
 
+def get_many_survey_response_by_ids(dbm, survey_response_ids):
+    try:
+        return dbm.get_many(survey_response_ids, SurveyResponse)
+    except DataObjectNotFound:
+        return None
+
 def get_survey_response_document(dbm, survey_response_id):
     return dbm._load_document(survey_response_id)
 
