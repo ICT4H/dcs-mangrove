@@ -158,6 +158,8 @@ class FormModelDocument(DocumentBase):
     xform = TextField()
     is_media_type_fields_present = BooleanField(default=False)
     created_using = TextField()
+    child_ids = ListField(TextField())
+    parent_info = DictField()
 
     def __init__(self, id=None):
         DocumentBase.__init__(self, id=id, document_type='FormModel')
@@ -174,6 +176,10 @@ class FormModelDocument(DocumentBase):
 
     def set_label(self, label):
         self.label = label
+
+    def add_child_id(self, value):
+        if not value in self.child_ids:
+            self.child_ids.append(value)
 
 class EntityFormModelDocument(FormModelDocument):
     entity_type = ListField(TextField())

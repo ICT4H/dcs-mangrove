@@ -37,6 +37,30 @@ class Project(FormModel):
             self._doc.sender_group = sender_group
             self._doc.reminder_and_deadline = default_reminder_and_deadline
 
+    def add_child(self, child_id):
+        self._doc.add_child_id(child_id)
+
+    def set_parent_info(self, parent_field_codes, action_label):
+        self._doc.parent_info["parent_field_codes"] = parent_field_codes
+        self._doc.parent_info['action_label'] = action_label
+
+    @property
+    def is_parent_project(self):
+        return len(self._doc.child_ids) > 0
+
+    @property
+    def is_child_project(self):
+        parents_codes = self._doc.parent_info.get("parent_field_codes")
+        return True if parents_codes and len(parents_codes) > 0 else False
+
+    @property
+    def child_ids(self):
+        return self._doc.child_ids
+
+    @property
+    def parent_info(self):
+        return self._doc.parent_info
+
     @classmethod
     def from_form_model(cls, form_model):
         return super(Project, cls).new_from_doc(form_model._dbm, ProjectDocument.wrap(form_model._doc._data))
