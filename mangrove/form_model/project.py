@@ -40,8 +40,8 @@ class Project(FormModel):
     def add_child(self, child_id):
         self._doc.add_child_id(child_id)
 
-    def set_parent_info(self, parent_field_codes, action_label):
-        self._doc.parent_info["parent_field_codes"] = parent_field_codes
+    def set_parent_info(self, parent_fields_code_label, action_label):
+        self._doc.parent_info["parent_fields_code_label"] = parent_fields_code_label
         self._doc.parent_info['action_label'] = action_label
 
     @property
@@ -50,7 +50,7 @@ class Project(FormModel):
 
     @property
     def is_child_project(self):
-        parents_codes = self._doc.parent_info.get("parent_field_codes")
+        parents_codes = self._doc.parent_info.get("parent_fields_code_label")
         return True if parents_codes and len(parents_codes) > 0 else False
 
     @property
