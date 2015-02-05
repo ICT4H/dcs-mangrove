@@ -6,6 +6,7 @@ from mangrove.datastore.documents import ProjectDocument
 from mangrove.datastore.entity import from_row_to_entity, Contact
 from mangrove.errors.MangroveException import DataObjectAlreadyExists
 from mangrove.form_model.deadline import Deadline, Month, Week
+from mangrove.form_model.field import FieldSet
 from mangrove.form_model.form_model import REPORTER, get_form_model_by_code, FormModel
 from mangrove.transport.repository.reporters import get_reporters_who_submitted_data_for_frequency_period
 
@@ -36,6 +37,9 @@ class Project(FormModel):
             self._doc.devices = devices
             self._doc.sender_group = sender_group
             self._doc.reminder_and_deadline = default_reminder_and_deadline
+
+    def is_field_set_field_present(self):
+         return len([f for f in self.fields if type(f) is FieldSet and f.fields]) > 0
 
     def add_child(self, child_id):
         self._doc.add_child_id(child_id)
