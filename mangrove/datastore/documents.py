@@ -243,6 +243,10 @@ class FormModelDocument(DocumentBase):
         if not value in self.child_ids:
             self.child_ids.append(value)
 
+    def remove_child(self, child_id):
+        if child_id in self.child_ids:
+            self.child_ids.remove(child_id)
+
 class EntityFormModelDocument(FormModelDocument):
     entity_type = ListField(TextField())
 

@@ -41,6 +41,9 @@ class Project(FormModel):
     def is_field_set_field_present(self):
          return len([f for f in self.fields if type(f) is FieldSet and f.fields]) > 0
 
+    def remove_child(self, child_id):
+        self._doc.remove_child(child_id)
+
     def add_child(self, child_id):
         self._doc.add_child_id(child_id)
 
@@ -65,6 +68,12 @@ class Project(FormModel):
     @property
     def parent_info(self):
         return self._doc.parent_info
+
+    @property
+    def parent_uuids(self):
+        # TODO at some point will also support multiple parents from UI.
+        parent_uuid = self._doc.parent_info.get('parent_uuid', None)
+        return [parent_uuid] if parent_uuid else []
 
     @classmethod
     def from_form_model(cls, form_model):
