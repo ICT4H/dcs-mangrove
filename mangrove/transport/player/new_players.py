@@ -98,7 +98,7 @@ class XFormPlayerV2(object):
         media_files = media_submission_service.create_media_documents(values)
         service = SurveyResponseService(self.dbm, logger, self.feeds_dbm)
         response = service.save_survey(form_code, values, [], request.transport, reporter_id)
-        self._add_new_attachments(media_files, response.survey_response_id)
+        self.add_new_attachments(media_files, response.survey_response_id)
         return response
 
     def add_guest_survey_response(self, request, logger=None):
@@ -117,10 +117,10 @@ class XFormPlayerV2(object):
         service = SurveyResponseService(self.dbm, logger, self.feeds_dbm)
         response = service.edit_survey(form_code, values, [], survey_response, additional_feed_dictionary)
         self._delete_removed_attachments(request, survey_response.id, media_submission_service)
-        self._add_new_attachments(media_files, survey_response.id)
+        self.add_new_attachments(media_files, survey_response.id)
         return response
 
-    def _add_new_attachments(self, media_files, survey_response_id):
+    def add_new_attachments(self, media_files, survey_response_id):
         if media_files:
             document = get_survey_response_document(self.dbm, survey_response_id)
             for name, file in media_files.iteritems():
