@@ -233,6 +233,14 @@ class FormModel(DataObject):
     def created_using(self):
         return self._doc.created_using
 
+    @property
+    def mobile_main_fields(self):
+        return self._doc.mobile_main_fields
+
+    @mobile_main_fields.setter
+    def mobile_main_fields(self, value):
+        self._doc.mobile_main_fields = value
+
     @created_using.setter
     def created_using(self, value):
         self._doc.created_using = value

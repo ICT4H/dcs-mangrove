@@ -160,6 +160,7 @@ class FormModelDocument(DocumentBase):
     created_using = TextField()
     child_ids = ListField(TextField())
     parent_info = DictField()
+    mobile_main_fields = ListField(DictField())
 
     def __init__(self, id=None):
         DocumentBase.__init__(self, id=id, document_type='FormModel')
