@@ -42,6 +42,24 @@ class UniqueIdUIField(UniqueIdField):
         return [(entity.short_code, escape(entity.data['name']['value'])) for entity in
                     get_all_entities(self.dbm, [self.unique_id_type])]
 
+def _questionnaire_xform(dbm, questionnaire, reporter_id):
+    _escape_special_characters(questionnaire)
+    ui_fields = []
+    for field in questionnaire.fields:
+        if isinstance(field, UniqueIdField):
+            ui_fields.append(UniqueIdUIField(field, dbm))
+        else:
+            ui_fields.append(field)
+    template = env.get_template('reporter_entity_form.xml')
+    return template.render(questionnaire=questionnaire, fields=ui_fields, field_xmls=field_xmls,
+                           reporter_id=reporter_id,
+                           field_types=field_types, default_template=env.get_template('text_field.xml'))
+
+
+def create_xform_by_form_id(dbm, form_id, reporter_id):
+    questionnaire = FormModel.get(dbm, form_id)
+    return _questionnaire_xform(dbm, questionnaire, reporter_id)
+
 def xform_for(dbm, form_id, reporter_id):
     questionnaire = FormModel.get(dbm, form_id)
     xform = questionnaire.xform
@@ -50,16 +68,7 @@ def xform_for(dbm, form_id, reporter_id):
         #so that in the smartphone repeat questions have atleast one group pre added
         return re.sub('ns2:template=""',"",xform_cleaned)
 
-    _escape_special_characters(questionnaire)
-    ui_fields = []
-    for field in questionnaire.fields:
-        if isinstance(field, UniqueIdField):
-            ui_fields.append(UniqueIdUIField(field,dbm))
-        else:
-            ui_fields.append(field)
-    template = env.get_template('reporter_entity_form.xml')
-    return template.render(questionnaire=questionnaire, fields=ui_fields, field_xmls=field_xmls, reporter_id=reporter_id,
-                           field_types=field_types, default_template=env.get_template('text_field.xml'))
+    return _questionnaire_xform(dbm, questionnaire, reporter_id)
 
 def _escape_special_characters(questionnaire):
     questionnaire.name = escape(questionnaire.name)
