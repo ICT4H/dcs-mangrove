@@ -27,6 +27,22 @@ def get_survey_responses(dbm, form_model_id, from_time, to_time, page_number=0, 
     return [SurveyResponse.new_from_doc(dbm=dbm, doc=SurveyResponse.__document_class__.wrap(row['value'])) for row in
             rows]
 
+def get_survey_responses_with_tag(dbm, form_model_id, from_time, to_time, ds_tag,
+                          page_number=0, page_size=None,
+                         view_name="surveyresponse"):
+
+    startkey, endkey = _get_start_and_end_key_with_tag(form_model_id, ds_tag, from_time, to_time)
+    if page_size is None:
+        rows = dbm.load_all_rows_in_view(view_name, reduce=False, descending=True,
+            startkey=startkey,
+            endkey=endkey)
+    else:
+        rows = dbm.load_all_rows_in_view(view_name, reduce=False, descending=True,
+            startkey=startkey,
+            endkey=endkey, skip=page_number * page_size, limit=page_size)
+    return [SurveyResponse.new_from_doc(dbm=dbm, doc=SurveyResponse.__document_class__.wrap(row['value'])) for row in
+            rows]
+
 def get_view_paginated(dbm, form_model_id, skip_records=0, page_size=None, view_name="undeleted_survey_response"):
     startkey, endkey = _get_start_and_end_key(form_model_id, None, None)
     results = dbm.load_view_results(view_name, reduce=False, descending=True,
@@ -79,4 +95,20 @@ def _get_start_and_end_key(form_model_id, from_time, to_time):
     end = [form_model_id] if from_time is None else [form_model_id, from_time]
     start = [form_model_id, {}] if to_time is None else [form_model_id, to_time]
 
+    return start, end
+
+def _get_key(ds_tag, form_model_id, time):
+    if ds_tag and time:
+        end = [form_model_id, ds_tag, time]
+    elif ds_tag:
+        end = [form_model_id, ds_tag, {}]
+    elif time:
+        end = [form_model_id, {}, time]
+    else:
+        end = [form_model_id, {}]
+    return end
+
+def _get_start_and_end_key_with_tag(form_model_id, ds_tag, from_time, to_time):
+    end = _get_key(ds_tag, form_model_id, from_time)
+    start = _get_key(ds_tag, form_model_id, to_time)
     return start, end

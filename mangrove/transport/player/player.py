@@ -4,7 +4,7 @@
 import inspect
 
 from mangrove.contrib.deletion import ENTITY_DELETION_FORM_CODE
-from mangrove.form_model.form_model import get_form_model_by_code
+from mangrove.form_model.form_model import get_form_model_by_code, TAG_FIELD_CODE
 from mangrove.errors.MangroveException import MangroveException
 from mangrove.form_model.form_model import NAME_FIELD
 from mangrove.transport.contract.response import Response
@@ -24,6 +24,8 @@ class Player(object):
         try:
             form_model.bind(values)
             cleaned_data, errors = form_model.validate_submission(values=values)
+            if TAG_FIELD_CODE in values.keys():
+                cleaned_data.update({TAG_FIELD_CODE: values[TAG_FIELD_CODE]})
             handler = handler_factory(self.dbm, form_model, is_update)
             response = handler.handle(form_model, cleaned_data, errors,  reporter_names,
                 self.location_tree)

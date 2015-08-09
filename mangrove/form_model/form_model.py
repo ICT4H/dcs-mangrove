@@ -38,6 +38,8 @@ MOBILE_NUMBER_FIELD_CODE = "m"
 EMAIL_FIELD = "email"
 EMAIL_FIELD_CODE = "email"
 REPORTER = "reporter"
+TAG = "tag"
+TAG_FIELD_CODE = "tg"
 GLOBAL_REGISTRATION_FORM_ENTITY_TYPE = "registration"
 FORM_MODEL_EXPIRY_TIME_IN_SEC = 2 * 60 * 60
 ENTITY_DELETION_FORM_CODE = "delete"
@@ -224,6 +226,9 @@ class FormModel(DataObject):
     def update_media_field_flag(self):
         if self.media_fields:
             self._doc.is_media_type_fields_present = True
+
+    def has_tag_field(self):
+        return self.get_field_by_code(TAG) is not None
 
     @property
     def xform(self):
