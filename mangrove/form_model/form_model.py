@@ -250,6 +250,10 @@ class FormModel(DataObject):
     def created_using(self, value):
         self._doc.created_using = value
 
+    @property
+    def created_using_xlxform(self):
+        return 'DW-DESIGNER' != self._doc.created_using
+
     def update_xform_with_questionnaire_name(self, questionnaire_name):
         self.xform = re.sub(r"<html:title>.+</html:", "<html:title>%s</html:" % questionnaire_name, self.xform)
 
